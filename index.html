@@ -1,88 +1,137 @@
-export default function TranslationWebsiteApp() {
-  return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-900 p-6 md:p-10">
-      <div className="max-w-6xl mx-auto">
-        <header className="mb-8">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white shadow-sm px-4 py-2 text-sm mb-4">
-            <span>🌐</span>
-            <span>Translate Anything</span>
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-3">AI 翻译网站</h1>
-          <p className="text-base md:text-lg text-neutral-600 max-w-2xl">
-            支持多语言文本翻译、自动检测语言、复制结果，以及清爽简洁的双栏输入体验。
-          </p>
-        </header>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>翻译网站</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #111;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .panel {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    select, button, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    textarea {
+      min-height: 220px;
+      resize: vertical;
+    }
+    button {
+      background: #111;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .result {
+      min-height: 220px;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      background: #f2f2f2;
+      white-space: pre-wrap;
+    }
+    @media (max-width: 800px) {
+      .box {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>简单翻译网站</h1>
+    <div class="box">
+      <div class="panel">
+        <label>原文语言</label>
+        <select id="sourceLang">
+          <option value="auto">自动检测</option>
+          <option value="zh-CN">中文</option>
+          <option value="en">English</option>
+          <option value="ja">日本语</option>
+          <option value="ko">한국어</option>
+        </select>
 
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-3xl shadow-sm p-5 md:p-6 border border-neutral-200">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">原文</h2>
-              <select className="rounded-xl border border-neutral-300 px-3 py-2 text-sm outline-none w-40">
-                <option>自动检测</option>
-                <option>中文</option>
-                <option>English</option>
-                <option>日本語</option>
-                <option>한국어</option>
-                <option>Français</option>
-              </select>
-            </div>
-            <textarea
-              className="w-full h-72 rounded-2xl border border-neutral-300 p-4 resize-none outline-none focus:ring-2 focus:ring-neutral-300"
-              placeholder="输入你想翻译的内容..."
-            />
-            <div className="flex flex-wrap gap-3 mt-4">
-              <button className="rounded-2xl px-5 py-3 bg-neutral-900 text-white font-medium hover:opacity-90 transition">
-                开始翻译
-              </button>
-              <button className="rounded-2xl px-5 py-3 bg-neutral-100 text-neutral-900 font-medium hover:bg-neutral-200 transition">
-                清空
-              </button>
-            </div>
-          </div>
+        <textarea id="inputText" placeholder="输入你想翻译的内容"></textarea>
+        <button onclick="translateText()">翻译</button>
+      </div>
 
-          <div className="bg-white rounded-3xl shadow-sm p-5 md:p-6 border border-neutral-200">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">译文</h2>
-              <select className="rounded-xl border border-neutral-300 px-3 py-2 text-sm outline-none w-40">
-                <option>English</option>
-                <option>中文</option>
-                <option>日本語</option>
-                <option>한국어</option>
-                <option>Français</option>
-              </select>
-            </div>
-            <div className="w-full h-72 rounded-2xl border border-neutral-200 bg-neutral-50 p-4 overflow-auto text-neutral-700">
-              翻译结果会显示在这里。
-            </div>
-            <div className="flex flex-wrap gap-3 mt-4">
-              <button className="rounded-2xl px-5 py-3 bg-neutral-900 text-white font-medium hover:opacity-90 transition">
-                复制译文
-              </button>
-              <button className="rounded-2xl px-5 py-3 bg-neutral-100 text-neutral-900 font-medium hover:bg-neutral-200 transition">
-                对调语言
-              </button>
-            </div>
-          </div>
-        </section>
+      <div class="panel">
+        <label>目标语言</label>
+        <select id="targetLang">
+          <option value="en">English</option>
+          <option value="zh-CN">中文</option>
+          <option value="ja">日本语</option>
+          <option value="ko">한국어</option>
+        </select>
 
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-          <div className="bg-white rounded-3xl shadow-sm p-5 border border-neutral-200">
-            <div className="text-2xl mb-2">⚡</div>
-            <h3 className="font-semibold mb-1">快速翻译</h3>
-            <p className="text-sm text-neutral-600">适合日常句子、作业内容、聊天消息和网页文案。</p>
-          </div>
-          <div className="bg-white rounded-3xl shadow-sm p-5 border border-neutral-200">
-            <div className="text-2xl mb-2">🎯</div>
-            <h3 className="font-semibold mb-1">自动识别语言</h3>
-            <p className="text-sm text-neutral-600">不需要手动判断原文语言，直接粘贴即可。</p>
-          </div>
-          <div className="bg-white rounded-3xl shadow-sm p-5 border border-neutral-200">
-            <div className="text-2xl mb-2">📋</div>
-            <h3 className="font-semibold mb-1">一键复制</h3>
-            <p className="text-sm text-neutral-600">翻译结果可以快速复制到作业、邮件或社交平台。</p>
-          </div>
-        </section>
+        <div class="result" id="outputText">翻译结果会显示在这里</div>
+        <button onclick="copyText()">复制结果</button>
       </div>
     </div>
-  );
-}
+  </div>
+
+  <script>
+    async function translateText() {
+      const input = document.getElementById("inputText").value.trim();
+      const source = document.getElementById("sourceLang").value;
+      const target = document.getElementById("targetLang").value;
+      const output = document.getElementById("outputText");
+
+      if (!input) {
+        output.textContent = "请先输入内容";
+        return;
+      }
+
+      output.textContent = "翻译中...";
+
+      try {
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${source}&tl=${target}&dt=t&q=${encodeURIComponent(input)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const translated = data[0].map(item => item[0]).join("");
+        output.textContent = translated;
+      } catch (e) {
+        output.textContent = "翻译失败，请稍后再试";
+      }
+    }
+
+    function copyText() {
+      const text = document.getElementById("outputText").textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("已复制");
+      });
+    }
+  </script>
+</body>
+</html>
