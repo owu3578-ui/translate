@@ -1,140 +1,213 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OWEN专属翻译</title>
-  <style>
-    {
-  box-sizing: border-box;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OWEN专属翻译</title>
+
+<style>
+
+*{
+box-sizing:border-box;
 }
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f7fb;
-      color: #111;
-    }
-    .container {
-      max-width: 100%;
-      margin: 40px auto;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .box {
-      display: grid;
-      grid-template-columns: 50% 50%;
-      gap: 20px;
-    }
-    .panel {
-      background: white;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    }
-    select, button, textarea {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-    textarea {
-      min-height: 220px;
-      resize: vertical;
-    }
-    button {
-      background: #111;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      opacity: 0.9;
-    }
-    .result {
-      min-height: 220px;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 10px;
-      background: #f2f2f2;
-      white-space: pre-wrap;
-    }
-    @media (max-width: 800px) {
-      .box {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:#f5f7fb;
+color:#111;
+}
+
+.container{
+width:100%;
+padding:30px;
+}
+
+h1{
+text-align:center;
+margin-bottom:25px;
+}
+
+.box{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.panel{
+background:white;
+border-radius:16px;
+padding:20px;
+box-shadow:0 4px 20px rgba(0,0,0,0.08);
+min-height:500px;
+}
+
+select,textarea,button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:10px;
+border:1px solid #ccc;
+font-size:16px;
+}
+
+textarea{
+min-height:350px;
+resize:vertical;
+}
+
+.result{
+min-height:350px;
+padding:12px;
+margin-top:10px;
+border-radius:10px;
+background:#f2f2f2;
+white-space:pre-wrap;
+}
+
+button{
+background:#111;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+button:hover{
+opacity:0.9;
+}
+
+.swap{
+margin-top:10px;
+}
+
+@media(max-width:800px){
+.box{
+grid-template-columns:1fr;
+}
+}
+
+</style>
 </head>
+
 <body>
-  <div class="container">
-    <h1>OWEN专属翻译</h1>
-    <div class="box">
-      <div class="panel">
-        <label>原文语言</label>
-        <select id="sourceLang">
-          <option value="auto">自动检测</option>
-          <option value="zh-CN">中文</option>
-          <option value="en">English</option>
-          <option value="ja">日本语</option>
-          <option value="ko">한국어</option>
-        </select>
 
-        <textarea id="inputText" placeholder="输入你想翻译的内容"></textarea>
-        <button onclick="translateText()">翻译</button>
-      </div>
+<div class="container">
 
-      <div class="panel">
-        <label>目标语言</label>
-        <select id="targetLang">
-          <option value="en">English</option>
-          <option value="zh-CN">中文</option>
-          <option value="ja">日本语</option>
-          <option value="ko">한국어</option>
-        </select>
+<h1>OWEN专属翻译</h1>
 
-        <div class="result" id="outputText">翻译结果会显示在这里</div>
-        <button onclick="copyText()">复制</button>
-      </div>
-    </div>
-  </div>
+<div class="box">
 
-  <script>
-    async function translateText() {
-      const input = document.getElementById("inputText").value.trim();
-      const source = document.getElementById("sourceLang").value;
-      const target = document.getElementById("targetLang").value;
-      const output = document.getElementById("outputText");
+<div class="panel">
 
-      if (!input) {
-        output.textContent = "请先输入内容";
-        return;
-      }
+<label>原文语言</label>
 
-      output.textContent = "翻译中...";
+<select id="sourceLang">
+<option value="auto">自动检测</option>
+<option value="zh-CN">中文</option>
+<option value="en">English</option>
+<option value="ja">日本语</option>
+<option value="ko">한국어</option>
+</select>
 
-      try {
-        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${source}&tl=${target}&dt=t&q=${encodeURIComponent(input)}`;
-        const res = await fetch(url);
-        const data = await res.json();
-        const translated = data[0].map(item => item[0]).join("");
-        output.textContent = translated;
-      } catch (e) {
-        output.textContent = "翻译失败，请稍后再试";
-      }
-    }
+<textarea id="inputText" placeholder="输入你想翻译的内容"></textarea>
 
-    function copyText() {
-      const text = document.getElementById("outputText").textContent;
-      navigator.clipboard.writeText(text).then(() => {
-        alert("已复制");
-      });
-    }
-  </script>
+<button class="swap" onclick="swapLang()">交换语言</button>
+
+</div>
+
+<div class="panel">
+
+<label>目标语言</label>
+
+<select id="targetLang">
+<option value="en">English</option>
+<option value="zh-CN">中文</option>
+<option value="ja">日本语</option>
+<option value="ko">한국어</option>
+</select>
+
+<div id="outputText" class="result">
+翻译结果会显示在这里
+</div>
+
+<button onclick="copyText()">复制翻译</button>
+
+</div>
+
+</div>
+</div>
+
+<script>
+
+let timer;
+
+document.getElementById("inputText").addEventListener("input",translateText);
+
+async function translateText(){
+
+clearTimeout(timer);
+
+timer=setTimeout(async ()=>{
+
+const input=document.getElementById("inputText").value.trim();
+const source=document.getElementById("sourceLang").value;
+const target=document.getElementById("targetLang").value;
+const output=document.getElementById("outputText");
+
+if(!input){
+output.textContent="翻译结果会显示在这里";
+return;
+}
+
+output.textContent="翻译中...";
+
+try{
+
+const url=`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${source}&tl=${target}&dt=t&q=${encodeURIComponent(input)}`;
+
+const res=await fetch(url);
+
+const data=await res.json();
+
+const translated=data[0].map(i=>i[0]).join("");
+
+output.textContent=translated;
+
+}catch{
+
+output.textContent="翻译失败";
+
+}
+
+},400);
+
+}
+
+function swapLang(){
+
+const source=document.getElementById("sourceLang");
+const target=document.getElementById("targetLang");
+
+const temp=source.value;
+
+source.value=target.value;
+target.value=temp;
+
+translateText();
+
+}
+
+function copyText(){
+
+const text=document.getElementById("outputText").textContent;
+
+navigator.clipboard.writeText(text);
+
+alert("已复制");
+
+}
+
+</script>
+
 </body>
 </html>
