@@ -6,207 +6,229 @@
 <title>OWEN专属翻译</title>
 
 <style>
-
 *{
-box-sizing:border-box;
+  box-sizing:border-box;
 }
 
 body{
-margin:0;
-font-family:Arial, sans-serif;
-background:#f5f7fb;
-color:#111;
+  margin:0;
+  font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+               "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background:#f5f7fb;
+  color:#111;
+  letter-spacing:0.2px;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
 
 .container{
-width:100%;
-padding:30px;
+  width:100%;
+  padding:30px;
 }
 
 h1{
-text-align:center;
-margin-bottom:25px;
+  text-align:center;
+  margin-bottom:25px;
+  font-weight:600;
+  letter-spacing:-0.5px;
 }
 
 .box{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:20px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
 }
 
 .panel{
-background:white;
-border-radius:16px;
-padding:20px;
-box-shadow:0 4px 20px rgba(0,0,0,0.08);
-min-height:500px;
+  background:white;
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.08);
+  min-height:500px;
 }
 
-select,textarea,button{
-width:100%;
-padding:12px;
-margin-top:10px;
-border-radius:10px;
-border:1px solid #ccc;
-font-size:16px;
+label{
+  font-size:15px;
+  font-weight:500;
+}
+
+select,
+textarea,
+button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:10px;
+  border:1px solid #ccc;
+  font-size:16px;
+  font-family:inherit;
+}
+
+select,
+textarea{
+  font-weight:400;
 }
 
 textarea{
-min-height:350px;
-resize:vertical;
+  min-height:350px;
+  resize:vertical;
+  line-height:1.5;
 }
 
 .result{
-min-height:350px;
-padding:12px;
-margin-top:10px;
-border-radius:10px;
-background:#f2f2f2;
-white-space:pre-wrap;
+  min-height:350px;
+  padding:12px;
+  margin-top:10px;
+  border-radius:10px;
+  background:#f2f2f2;
+  white-space:pre-wrap;
+  line-height:1.5;
+  font-size:16px;
+  font-weight:400;
 }
 
 button{
-background:#111;
-color:white;
-border:none;
-cursor:pointer;
+  background:#111;
+  color:white;
+  border:none;
+  cursor:pointer;
+  font-weight:500;
+  transition:opacity 0.2s ease;
 }
 
 button:hover{
-opacity:0.9;
+  opacity:0.9;
 }
 
 .swap{
-margin-top:10px;
+  margin-top:10px;
 }
 
 @media(max-width:800px){
-.box{
-grid-template-columns:1fr;
+  .box{
+    grid-template-columns:1fr;
+  }
 }
-}
-
 </style>
 </head>
 
 <body>
 
 <div class="container">
+  <h1>OWEN专属翻译</h1>
 
-<h1>OWEN专属翻译</h1>
+  <div class="box">
+    <div class="panel">
+      <label>原文语言</label>
 
-<div class="box">
+      <select id="sourceLang">
+        <option value="auto">自动检测</option>
+        <option value="zh-CN">中文</option>
+        <option value="en">English</option>
+        <option value="ja">日本语</option>
+        <option value="ko">한국어</option>
+      </select>
 
-<div class="panel">
+      <textarea id="inputText" placeholder="输入你想翻译的内容"></textarea>
 
-<label>原文语言</label>
+      <button class="swap" onclick="swapLang()">交换语言</button>
+    </div>
 
-<select id="sourceLang">
-<option value="auto">自动检测</option>
-<option value="zh-CN">中文</option>
-<option value="en">English</option>
-<option value="ja">日本语</option>
-<option value="ko">한국어</option>
-</select>
+    <div class="panel">
+      <label>目标语言</label>
 
-<textarea id="inputText" placeholder="输入你想翻译的内容"></textarea>
+      <select id="targetLang">
+        <option value="en">English</option>
+        <option value="zh-CN">中文</option>
+        <option value="ja">日本语</option>
+        <option value="ko">한국어</option>
+      </select>
 
-<button class="swap" onclick="swapLang()">交换语言</button>
+      <div id="outputText" class="result">翻译结果会显示在这里</div>
 
-</div>
-
-<div class="panel">
-
-<label>目标语言</label>
-
-<select id="targetLang">
-<option value="en">English</option>
-<option value="zh-CN">中文</option>
-<option value="ja">日本语</option>
-<option value="ko">한국어</option>
-</select>
-
-<div id="outputText" class="result">
-
-</div>
-
-<button onclick="copyText()">复制翻译</button>
-
-</div>
-
-</div>
+      <button onclick="copyText()">复制翻译</button>
+    </div>
+  </div>
 </div>
 
 <script>
-
 let timer;
 
-document.getElementById("inputText").addEventListener("input",translateText);
+document.getElementById("inputText").addEventListener("input", translateText);
+document.getElementById("sourceLang").addEventListener("change", translateText);
+document.getElementById("targetLang").addEventListener("change", translateText);
 
 async function translateText(){
+  clearTimeout(timer);
 
-clearTimeout(timer);
+  timer = setTimeout(async () => {
+    const input = document.getElementById("inputText").value.trim();
+    const source = document.getElementById("sourceLang").value;
+    const target = document.getElementById("targetLang").value;
+    const output = document.getElementById("outputText");
 
-timer=setTimeout(async ()=>{
+    if(!input){
+      output.textContent = "翻译结果会显示在这里";
+      return;
+    }
 
-const input=document.getElementById("inputText").value.trim();
-const source=document.getElementById("sourceLang").value;
-const target=document.getElementById("targetLang").value;
-const output=document.getElementById("outputText");
+    output.textContent = "翻译中...";
 
-if(!input){
-output.textContent="翻译结果会显示在这里";
-return;
-}
-
-output.textContent="翻译中...";
-
-try{
-
-const url=`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${source}&tl=${target}&dt=t&q=${encodeURIComponent(input)}`;
-
-const res=await fetch(url);
-
-const data=await res.json();
-
-const translated=data[0].map(i=>i[0]).join("");
-
-output.textContent=translated;
-
-}catch{
-
-output.textContent="翻译失败";
-
-}
-
-},400);
-
+    try{
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${source}&tl=${target}&dt=t&q=${encodeURIComponent(input)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const translated = data[0].map(i => i[0]).join("");
+      output.textContent = translated;
+    }catch{
+      output.textContent = "翻译失败";
+    }
+  }, 400);
 }
 
 function swapLang(){
+  const source = document.getElementById("sourceLang");
+  const target = document.getElementById("targetLang");
+  const input = document.getElementById("inputText");
+  const output = document.getElementById("outputText");
 
-const source=document.getElementById("sourceLang");
-const target=document.getElementById("targetLang");
+  if(source.value === "auto"){
+    source.value = "zh-CN";
+  }
 
-const temp=source.value;
+  const tempLang = source.value;
+  source.value = target.value;
+  target.value = tempLang;
 
-source.value=target.value;
-target.value=temp;
+  const tempText = input.value;
+  input.value = output.textContent === "翻译结果会显示在这里" || output.textContent === "翻译中..." || output.textContent === "翻译失败"
+    ? input.value
+    : output.textContent;
 
-translateText();
+  output.textContent = tempText || "翻译结果会显示在这里";
 
+  if(input.value.trim()){
+    translateText();
+  }
 }
 
 function copyText(){
+  const text = document.getElementById("outputText").textContent;
 
-const text=document.getElementById("outputText").textContent;
+  if(
+    !text ||
+    text === "翻译结果会显示在这里" ||
+    text === "翻译中..." ||
+    text === "翻译失败"
+  ){
+    alert("没有可复制的翻译内容");
+    return;
+  }
 
-navigator.clipboard.writeText(text);
-
-alert("已复制");
-
+  navigator.clipboard.writeText(text).then(() => {
+    alert("已复制");
+  });
 }
-
 </script>
 
 </body>
